@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aprende e Ingenia</title>
+    <style>
+        .container {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh; /* ❌ CORREGIDO: 'heigh' → 'height' */
+            background-color: #B4FFF6;
+            color: black;
+            text-align: center; /* ❌ CORREGIDO: Faltaba punto y coma */
+        }
+        
+        /* Estilos adicionales para mejor presentación */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        h1 {
+            padding-top: 20px;
+            margin: 0;
+        }
+        
+        img {
+            margin-top: 20px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body class="container">
+    <h1>VIDEO EN TIEMPO REAL</h1>
+    <div>
+        <img src="{{ url_for('video') }}" width="50%" alt="Video en tiempo real">
+    </div>
+</body>
+</html>

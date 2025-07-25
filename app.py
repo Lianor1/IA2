@@ -1,23 +1,67 @@
-from flask import Flask, render_template
+# Importamos librerias
+from flask import Flask, render_template, Response
+import cv2
+import mediapipe as mp
 
-app = Flask(__name__)
+# Creamos nuestra funcion de dibujo
+mpDibujo = mp.solutions.drawing_utils
+ConfDibu = mpDibujo.DrawingSpec(thickness=1, circle_radius=1)
 
+# Creamos un objeto donde almacenaremos la malla facial
+mpMallaFacial = mp.solutions.face_mesh
+MallaFacial = mpMallaFacial.FaceMesh(max_num_faces=1)
+
+# Realizamos la Videocaptura
+cap = cv2.VideoCapture(1)
+
+# Creamos la app
+app =  Flask(__name__)
+
+# Mostramos el video en RT
+def gen_frame():
+    # Empezamos
+    while True:
+        # Leemos la VideoCaptura
+        ret, frame = cap.read()
+
+        # Si tenemos un error
+        if not ret:
+            break
+
+        else:
+
+            # Correccion de color
+            frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+            # Observamos los resultados
+            resultados = MallaFacial.process(frameRGB)
+
+            # Si tenemos rostros
+            if resultados.multi_face_landmarks:
+                # Iteramos
+                for rostros in resultados.multi_face_landmarks:
+                    # Dibujamos
+                    mpDibujo.draw_landmarks(frame, rostros, mpMallaFacial.FACEMESH_TESSELATION, ConfDibu, ConfDibu)
+
+
+            # Codificamos nuestro video en Bytes
+            suc, encode = cv2.imencode('.jpg', frame)
+            frame = encode.tobytes()
+
+        yield(b'--frame\r\n'
+              b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+# Ruta de aplicacion 'principal'
 @app.route('/')
-def home():
-    return render_template('index.html')
+def index():
+    return render_template('Index.html')
 
-@app.route('/saludo/<nombre>')
-def saludo(nombre):
-    return f'''
-    <div style="text-align: center; margin-top: 50px;">
-        <h1>¡Hola {nombre}!</h1>
-        <p>Esta es tu app Flask en Render</p>
-        <a href="/" class="btn btn-primary">Volver al inicio</a>
-    </div>
-    '''
+# Ruta del video
+@app.route('/video')
+def video():
+    return Response(gen_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-# Importante para Render
-if __name__ == '__main__':
-    import os
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+# Ejecutamos la app
+if __name__ == "__main__":
+    app.run(debug = True)
