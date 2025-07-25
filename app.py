@@ -1,18 +1,20 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return '''
-    <h1>¡Hola desde Flask en Render!</h1>
-    <p>Tu aplicación está funcionando correctamente</p>
-    <a href="/saludo/Mundo">Probar otra ruta</a>
-    '''
+    return render_template('index.html')
 
 @app.route('/saludo/<nombre>')
 def saludo(nombre):
-    return f'<h1>¡Hola {nombre}!</h1><p>Esta es tu app Flask en Render</p>'
+    return f'''
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>¡Hola {nombre}!</h1>
+        <p>Esta es tu app Flask en Render</p>
+        <a href="/" class="btn btn-primary">Volver al inicio</a>
+    </div>
+    '''
 
 # Importante para Render
 if __name__ == '__main__':

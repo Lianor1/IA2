@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Mi App Flask{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h1 class="display-4">¡Bienvenido a Flask!</h1>
+        <p class="lead">Tu aplicación está funcionando correctamente en Render</p>
+        
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Funcionalidades</h5>
+                <p class="card-text">Esta es una aplicación Flask básica lista para desplegar en Render.</p>
+                <a href="/saludo/Usuario" class="btn btn-primary">Probar ruta de saludo</a>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <img src="https://flask.palletsprojects.com/en/3.0.x/_images/flask-horizontal.png" 
+                 alt="Flask Logo" class="img-fluid" style="max-width: 200px;">
+        </div>
+    </div>
+</div>
+{% endblock %}
