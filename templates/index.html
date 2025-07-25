@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Detector de Señas - Aprende e Ingenia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .video-section {
+            display: none;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        .video-container {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: #000;
+        }
+
+        .video-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .start-btn:active {
+            transform: translateY(0) scale(1);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: white;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            display: none;
+        }
+
+        .features {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-width: 150px;
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .start-btn {
+                font-size: 1.1rem;
+                padding: 12px 30px;
+            }
+            
+            .video-section {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(79, 172, 254, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(79, 172, 254, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(79, 172, 254, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-hands-helping"></i> Detector de Señas Inteligente</h1>
+            <p>Sistema avanzado de reconocimiento de lenguaje de señas en tiempo real</p>
+        </div>
+
+        <!-- Botón de inicio -->
+        <button id="startBtn" class="start-btn pulse">
+            <i class="fas fa-play-circle"></i>
+            Iniciar Detección
+        </button>
+
+        <!-- Sección de video (oculta inicialmente) -->
+        <div id="videoSection" class="video-section">
+            <div class="video-container">
+                <img id="videoStream" src="" alt="Detección de señas en tiempo real" style="display: none;">
+            </div>
+            
+            <div class="controls">
+                <button id="pauseBtn" class="control-btn">
+                    <i class="fas fa-pause"></i>
+                    Pausar
+                </button>
+                <button id="stopBtn" class="control-btn">
+                    <i class="fas fa-stop"></i>
+                    Detener
+                </button>
+                <button id="fullscreenBtn" class="control-btn">
+                    <i class="fas fa-expand"></i>
+                    Pantalla Completa
+                </button>
+            </div>
+        </div>
+
+        <div id="status" class="status">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            Inicializando sistema de detección...
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <p>Tiempo Real</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-brain"></i>
+                <p>IA Avanzada</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-hands"></i>
+                <p>Detección Precisa</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <p>Seguro</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('startBtn');
+            const videoSection = document.getElementById('videoSection');
+            const videoStream = document.getElementById('videoStream');
+            const status = document.getElementById('status');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+            // Iniciar detección
+            startBtn.addEventListener('click', function() {
+                // Mostrar estado de carga
+                status.style.display = 'block';
+                startBtn.disabled = true;
+                
+                // Simular inicialización
+                setTimeout(function() {
+                    // Mostrar sección de video
+                    videoSection.style.display = 'block';
+                    videoStream.style.display = 'block';
+                    videoStream.src = "{{ url_for('video') }}";
+                    
+                    // Ocultar estado
+                    status.style.display = 'none';
+                    
+                    // Cambiar texto del botón
+                    startBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Reiniciar';
+                    startBtn.disabled = false;
+                    startBtn.classList.remove('pulse');
+                    
+                    // Agregar funcionalidad de reinicio
+                    startBtn.onclick = function() {
+                        location.reload();
+                    };
+                }, 2000);
+            });
+
+            // Pausar video
+            pauseBtn.addEventListener('click', function() {
+                if (videoStream.style.display === 'none') {
+                    videoStream.style.display = 'block';
+                    pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+                } else {
+                    videoStream.style.display = 'none';
+                    pauseBtn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
+                }
+            });
+
+            // Detener detección
+            stopBtn.addEventListener('click', function() {
+                videoSection.style.display = 'none';
+                videoStream.src = '';
+                startBtn.innerHTML = '<i class="fas fa-play-circle"></i> Iniciar Detección';
+                startBtn.onclick = document.querySelector('[onclick]').onclick;
+            });
+
+            // Pantalla completa
+            fullscreenBtn.addEventListener('click', function() {
+                const videoContainer = document.querySelector('.video-container');
+                if (videoContainer.requestFullscreen) {
+                    videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    videoContainer.webkitRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    videoContainer.msRequestFullscreen();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
